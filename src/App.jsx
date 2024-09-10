@@ -5,13 +5,26 @@ import './App.css'
 function App() {
   const fileInputRef = useRef(null)
   const [images, setImages] = useState([])
+  const [imagePreviews, setImagePreviews] = useState([])
 
   const handleCLick = () => {
     fileInputRef.current.click()
   }
 
   const handleFileChange = (e) => {
-    setImages(e.target.files)
+    const files = Array.from(e.target.files)
+
+    setImages(files)
+    const filePreviews = []
+
+    files.forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        filePreviews.push(event.target.result)
+        setImagePreviews([...filePreviews])
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   const handleConvert = () => {
@@ -40,14 +53,38 @@ function App() {
       reader.readAsDataURL(file)
     })
   }
+
+  const clearImages = () => {
+    setImages([])
+    setImagePreviews([])
+    fileInputRef.current.value = ''
+  }
+
+  console.log(images)
   
   return (
     <>
       <h2>IMAGE TO PDF</h2>
       <p>Convert images to PDF in seconds. Easily adjust orientation and margins.</p>
+
       {(images.length == 0 )
         ?<button onClick={handleCLick}>Select your images</button>
-        :<button onClick={handleConvert}>Convert to PDF</button>
+        :(
+          <>
+            <button onClick={handleConvert}>Convert to PDF</button>
+            <button onClick={clearImages}>Clear</button>
+            {
+              Array.isArray(images) && images.length > 0  &&
+              imagePreviews.map((image, index) => {
+                return (
+                  <div className="imgContainer" key={index}>
+                    <img src={image} alt={`Uploaded ${index}`} style={{ width: '90%', height: 'auto' }} />
+                  </div>
+                )
+              })
+            }
+          </>
+        )
       }
       <input 
       type="file" 
