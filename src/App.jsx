@@ -14,46 +14,50 @@ function App() {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files)
 
-    setImages(files)
+    setImages((prevImages) => [...prevImages, ...files])
     const filePreviews = []
 
     files.forEach((file) => {
       const reader = new FileReader()
       reader.onload = (event) => {
         filePreviews.push(event.target.result)
-        setImagePreviews([...filePreviews])
-      }
-      reader.readAsDataURL(file)
-    })
-  }
-
-  const handleConvert = () => {
-    if (!images.length) return
-
-    const pdf = new jsPDF()
-
-    Array.from(images).forEach((file, index) =>{
-      const reader = new FileReader()
-      reader.onload = function(event) {
-        const img = new Image()
-        img.src = event.target.result
-
-        img.onload = function() {
-          const imgWidth = pdf.internal.pageSize.getWidth()
-          const imgHeight = (img.height * imgWidth) / img.width
-
-          if (index > 0) pdf.addPage()
-          pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight)
-          
-          if (index === images.length -1) {
-            pdf.save('converted.pdf')
-          }
+        if (filePreviews.length === files.length) {
+          setImagePreviews((prevPreviews) => [...prevPreviews, ...filePreviews])
         }
       }
       reader.readAsDataURL(file)
     })
   }
 
+  const handleConvert = async () => {
+    if (!images.length) return
+  
+    const pdf = new jsPDF();
+  
+    for (let index = 0; index < images.length; index++) {
+      const file = images[index]
+  
+      const imgData = await new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          resolve(event.target.result)
+        }
+        reader.readAsDataURL(file)
+      })
+  
+      const img = new Image()
+      img.src = imgData
+  
+      const imgWidth = pdf.internal.pageSize.getWidth()
+      const imgHeight = (img.height * imgWidth) / img.width
+  
+      if (index > 0) pdf.addPage()
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
+    }
+
+    pdf.save('converted.pdf')
+  };
+  
   const clearImages = () => {
     setImages([])
     setImagePreviews([])
@@ -72,6 +76,7 @@ function App() {
         :(
           <>
             <button onClick={handleConvert}>Convert to PDF</button>
+            <button onClick={handleCLick}>Add images</button>
             <button onClick={clearImages}>Clear</button>
             {
               Array.isArray(images) && images.length > 0  &&
