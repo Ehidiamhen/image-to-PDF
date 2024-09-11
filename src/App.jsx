@@ -67,26 +67,33 @@ function App() {
   console.log(images)
   
   return (
-    <>
-      <h2>IMAGE TO PDF</h2>
+    <div className='container'>
+      <h2>PIC TO PDF</h2>
       <p>Convert images to PDF in seconds. Easily adjust orientation and margins.</p>
 
       {(images.length == 0 )
-        ?<button onClick={handleCLick}>Select your images</button>
+        ?<button onClick={handleCLick} className='btn btn-upload'>Select your images</button>
         :(
           <>
-            <button onClick={handleConvert}>Convert to PDF</button>
-            <button onClick={handleCLick}>Add images</button>
-            <button onClick={clearImages}>Clear</button>
+            <div className="card">
+            <button onClick={handleConvert} className='btn btn-convert'>Convert to PDF</button>
+            <button onClick={handleCLick} className='btn btn-upload'>Add More Images</button>
+            <button onClick={clearImages} className='btn btn-clear'>Clear Images</button>
+            </div>
             {
               Array.isArray(images) && images.length > 0  &&
-              imagePreviews.map((image, index) => {
-                return (
-                  <div className="imgContainer" key={index}>
-                    <img src={image} alt={`Uploaded ${index}`} style={{ width: '90%', height: 'auto' }} />
+              (
+                <div className="preview-container">
+                  <h3>Selected Images</h3>
+                  <div className="image-grid">
+                  {imagePreviews.map((image, index) => {
+                    return (
+                     <img key={index} src={image} alt={`Uploaded ${index}`} className='preview-img' />
+                    )
+                  })}
                   </div>
-                )
-              })
+                </div>
+              )
             }
           </>
         )
@@ -100,7 +107,7 @@ function App() {
       onChange={handleFileChange}
       />
       
-    </>
+    </div>
   )
 }
 
