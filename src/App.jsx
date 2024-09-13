@@ -48,11 +48,17 @@ function App() {
       const img = new Image()
       img.src = imgData
   
-      const imgWidth = pdf.internal.pageSize.getWidth()
+      const pageWidth = pdf.internal.pageSize.getWidth()
+      const pageHeight = pdf.internal.pageSize.getHeight()
+
+      const imgWidth = pageWidth * 1
       const imgHeight = (img.height * imgWidth) / img.width
+
+      const x  = (pageWidth - imgWidth) / 2
+      const y = (pageHeight - imgHeight) / 2
   
       if (index > 0) pdf.addPage()
-      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
+      pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight, undefined, 'SLOW')
     }
 
     pdf.save('converted.pdf')
