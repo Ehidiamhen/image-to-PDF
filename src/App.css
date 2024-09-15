@@ -10,6 +10,8 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  height: 100%;
+  width: 100%;
 }
 
 .card {
@@ -49,6 +51,11 @@ h2 {
 
 .btn:hover {
   opacity: 0.9;
+}
+
+.drop {
+  margin-top: 0;
+  font-size: 14px;
 }
 
 .preview-container {

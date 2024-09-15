@@ -12,7 +12,8 @@ function App() {
   }
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files)
+    let files = Array.from(e.target.files)
+    files = removeInvalidFiles(files)
 
     setImages((prevImages) => [...prevImages, ...files])
     const filePreviews = []
@@ -70,15 +71,42 @@ function App() {
     fileInputRef.current.value = ''
   }
 
+  const removeInvalidFiles = (files) => {
+    const validFiles = files.filter(file => file.type.startsWith('image/'))
+    return validFiles
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+
+    let files = Array.from(e.dataTransfer.files)
+    files = removeInvalidFiles(files)
+
+    files.length && handleFileChange({target: { files }})
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+  }
+
   console.log(images)
   
   return (
-    <div className='container'>
+    <div
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      className='container'
+    >
       <h2>PIC TO PDF</h2>
       <p>Convert images to PDF in seconds. Easily adjust orientation and margins.</p>
 
       {(images.length == 0 )
-        ?<button onClick={handleCLick} className='btn btn-upload'>Select your images</button>
+        ?(
+          <>
+            <button onClick={handleCLick} className='btn btn-upload'>Select your images</button>
+            <p className='drop'>or drop images here</p>
+          </>
+        )
         :(
           <>
             <div className="card">
