@@ -6,6 +6,7 @@ function App() {
   const fileInputRef = useRef(null)
   const [images, setImages] = useState([])
   const [imagePreviews, setImagePreviews] = useState([])
+  const [converting, setConverting] = useState(false)
 
   const handleCLick = () => {
     fileInputRef.current.click()
@@ -31,6 +32,7 @@ function App() {
   }
 
   const handleConvert = async () => {
+    setConverting(true)
     if (!images.length) return
   
     const pdf = new jsPDF();
@@ -63,6 +65,7 @@ function App() {
     }
 
     pdf.save('converted.pdf')
+    setConverting(false)
   };
   
   const clearImages = () => {
@@ -87,6 +90,14 @@ function App() {
 
   const handleDragOver = (e) => {
     e.preventDefault()
+  }
+
+  const handleDelete = (index) => {
+    const updatedPreviews = imagePreviews.filter((_, i) => i !== index)
+    const updatedImages = images.filter((_, i) => i !== index)
+    
+    setImagePreviews(updatedPreviews)
+    setImages(updatedImages)
   }
 
   console.log(images)
@@ -117,12 +128,15 @@ function App() {
             {
               Array.isArray(images) && images.length > 0  &&
               (
-                <div className="preview-container">
+                <div className="preview">
                   <h3>Selected Images</h3>
                   <div className="image-grid">
                   {imagePreviews.map((image, index) => {
                     return (
-                     <img key={index} src={image} alt={`Uploaded ${index}`} className='preview-img' />
+                      <div className="img-container" key={index}>
+                        <img src={image} alt={`Uploaded ${index}`} className='preview-img' />
+                        <i onClick={() => handleDelete(index)} className="fa-regular fa-solid fa-circle-xmark delete"></i>
+                      </div>
                     )
                   })}
                   </div>
@@ -140,7 +154,14 @@ function App() {
       multiple
       onChange={handleFileChange}
       />
-      
+      {
+        converting && 
+        (
+          <div className="loadingState">
+            <i className="fa-solid fa-gear"></i>
+          </div>
+        )
+      }
     </div>
   )
 }
