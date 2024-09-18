@@ -7,16 +7,22 @@ function App() {
   const [images, setImages] = useState([])
   const [imagePreviews, setImagePreviews] = useState([])
   const [converting, setConverting] = useState(false)
+  const [landscape, setLandscape] = useState(false)
+
+  const removeInvalidFiles = (files) => {
+    const validFiles = files.filter(file => file.type.startsWith('image/'))
+    return validFiles
+  }
 
   const handleCLick = () => {
     fileInputRef.current.click()
   }
 
   const handleFileChange = (e) => {
-    let files = Array.from(e.target.files)
-    files = removeInvalidFiles(files)
+    const files = Array.from(e.target.files)
+    const sortedFiles = removeInvalidFiles(files)
 
-    setImages((prevImages) => [...prevImages, ...files])
+    setImages((prevImages) => [...prevImages, ...sortedFiles])
     const filePreviews = []
 
     files.forEach((file) => {
@@ -35,7 +41,9 @@ function App() {
     setConverting(true)
     if (!images.length) return
   
-    const pdf = new jsPDF();
+    const pdf = new jsPDF({
+      orientation: landscape ? 'landscape' : 'portrait',
+    });
   
     for (let index = 0; index < images.length; index++) {
       const file = images[index]
@@ -54,8 +62,19 @@ function App() {
       const pageWidth = pdf.internal.pageSize.getWidth()
       const pageHeight = pdf.internal.pageSize.getHeight()
 
-      const imgWidth = pageWidth * 1
-      const imgHeight = (img.height * imgWidth) / img.width
+      const imgAspectRatio = img.width / img.height 
+      const pageAspectRatio = pageWidth / pageHeight
+
+      let imgWidth = 1 
+      let imgHeight = 1
+      
+      if (imgAspectRatio > pageAspectRatio) {
+        imgWidth = pageWidth * 1
+        imgHeight = imgWidth / imgAspectRatio
+      } else {
+        imgHeight = pageHeight * 1
+        imgWidth = imgHeight * imgAspectRatio
+      }
 
       const x  = (pageWidth - imgWidth) / 2
       const y = (pageHeight - imgHeight) / 2
@@ -72,20 +91,16 @@ function App() {
     setImages([])
     setImagePreviews([])
     fileInputRef.current.value = ''
-  }
-
-  const removeInvalidFiles = (files) => {
-    const validFiles = files.filter(file => file.type.startsWith('image/'))
-    return validFiles
+    setLandscape(false)
   }
 
   const handleDrop = (e) => {
     e.preventDefault()
 
-    let files = Array.from(e.dataTransfer.files)
-    files = removeInvalidFiles(files)
+    const files = Array.from(e.dataTransfer.files)
+    sortedFiles = removeInvalidFiles(files)
 
-    files.length && handleFileChange({target: { files }})
+    files.length && handleFileChange({target: { sortedFiles }})
   }
 
   const handleDragOver = (e) => {
@@ -124,6 +139,7 @@ function App() {
             <button onClick={handleConvert} className='btn btn-convert'>Convert to PDF</button>
             <button onClick={handleCLick} className='btn btn-upload'>Add More Images</button>
             <button onClick={clearImages} className='btn btn-clear'>Clear Images</button>
+            <button onClick={() => setLandscape(!landscape)}>{landscape ? 'Portrait' : 'Landscape'}</button>
             </div>
             {
               Array.isArray(images) && images.length > 0  &&
@@ -133,7 +149,14 @@ function App() {
                   <div className="image-grid">
                   {imagePreviews.map((image, index) => {
                     return (
-                      <div className="img-container" key={index}>
+                      <div 
+                        className="img-container" 
+                        key={index}
+                        style={{
+                          width: landscape ? '297px':'210px',
+                          height: landscape ? '210px' : '297px',
+                        }}
+                      >
                         <img src={image} alt={`Uploaded ${index}`} className='preview-img' />
                         <i onClick={() => handleDelete(index)} className="fa-regular fa-solid fa-circle-xmark delete"></i>
                       </div>
