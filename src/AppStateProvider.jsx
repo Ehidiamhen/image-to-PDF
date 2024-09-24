@@ -6,6 +6,7 @@ const initialState = {
     imagePreviews: [],
     converting: false,
     landscape: false,
+    sidebar: false,
 }
 
 const appReducer = (state, action) => {
@@ -13,13 +14,59 @@ const appReducer = (state, action) => {
         case 'delete_image':
             return {
                 ...state,
-                images: state.images.filter((image) => image.id !== action.payload),
-                imagePreviews: state.imagePreviews.filter((image) => image.id !== action.payload),
+                images: state.images.filter((_, i) => i !== action.payload),
+                imagePreviews: state.imagePreviews.filter((_, i) => i !== action.payload),
             };
+
+        case 'add_image':
+            return {
+              ...state,
+              images: [...state.images, ...action.payload],
+            };
+
+        case 'add_preview':
+          return {
+            ...state,
+            imagePreviews: [...state.imagePreviews, ...action.payload],
+          };
+
+        case 'converting':
+          return {
+            ...state, 
+            converting: !state.converting,
+          };
+
+        case 'portrait':
+          return {
+            ...state, 
+            landscape: false,
+          }
+
+        case 'landscape':
+          return {
+            ...state,
+            landscape: true,
+          };
+
+        case 'clear':
+          return {
+            ...state,
+            images: [],
+            imagePreviews:[],
+            landscape: false,
+            sidebar: false,
+          }; 
+
+        case 'sidebar':
+          return {
+            ...state,
+            sidebar: !state.sidebar,
+          };
+
         default:
             return state;
     }
-};
+  };
 
 export const AppStateProvider = ({children}) => {
     const [state, dispatch] = useReducer(appReducer, initialState);

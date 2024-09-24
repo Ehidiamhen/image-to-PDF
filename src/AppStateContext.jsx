@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-// export 
+export const AppStateContext = createContext();
