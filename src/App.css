@@ -53,7 +53,7 @@ h2 {
   color: white;
 }
 
-.btn:hover, .delete:hover, .open-sidebar:hover, .close-sidebar:hover {
+.btn:hover, .delete:hover, .open-sidebar:hover, .close-sidebar:hover, .img-container i:hover {
   opacity: 0.9;
 }
 
@@ -93,6 +93,10 @@ h2 {
   object-fit: contain;
 }
 
+.img-container i:hover {
+  transform: scale(1.1);
+}
+
 .delete {
   display: none;
   position: absolute;
@@ -105,7 +109,15 @@ h2 {
   border-radius: 50%;
 }
 
-.img-container:hover .delete {
+.download {
+  right: 45px;
+  color: black;
+  background-color: #ebebf4;
+  font-size: 1.2rem;
+  padding: 6.4px;
+}
+
+.img-container:hover .delete, .img-container:hover .download {
   display: block;
 }
 

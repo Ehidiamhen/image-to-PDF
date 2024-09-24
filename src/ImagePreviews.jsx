@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AppStateContext } from "./AppStateContext";
 import jsPDF from 'jspdf'
 
-export default function ImagePreviews({ fileInputRef, handleClick }) {
+export default function ImagePreviews({ fileInputRef, handleClick, }) {
     const { state, dispatch } = useContext(AppStateContext)
 
     const handleConvert = async () => {
@@ -55,6 +55,50 @@ export default function ImagePreviews({ fileInputRef, handleClick }) {
         dispatch({type: 'converting'})
     };
 
+    const handleSingleConvert = (image) => {
+        dispatch({ type: 'converting' });
+        if(!image) return
+
+        const pdf = new jsPDF({
+            orientation: state.landscape ? 'landscape' : 'portrait',
+        });
+
+        const img = new Image();
+        img.src = image;
+
+        img.onload = () => {
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
+            const imgAspectRatio = img.width / img.height;
+            const pageAspectRatio = pageWidth / pageHeight;
+
+            let imgWidth = 1;
+            let imgHeight = 1;
+
+            if (imgAspectRatio > pageAspectRatio) {
+                imgWidth = pageWidth * state.margin;
+                imgHeight = imgWidth / imgAspectRatio;
+            } else {
+                imgHeight = pageHeight * state.margin;
+                imgWidth = imgHeight * imgAspectRatio;
+            }
+
+            const x = (pageWidth - imgWidth) / 2;
+            const y = (pageHeight - imgHeight) / 2;
+
+            if (x >= 0 && y >= 0 && imgWidth > 0 && imgHeight > 0) {
+                pdf.addImage(img.src, 'JPEG', x, y, imgWidth, imgHeight, undefined, 'SLOW');
+            }
+
+            pdf.save(`converted_img.pdf`);
+            dispatch({ type: 'converting' });
+        };
+        img.onerror = () => {
+            console.error("Error loading image");
+        };
+    };
+    
     const clearImages = () => {
         dispatch({type: 'clear'})
         fileInputRef.current.value = ''
@@ -93,6 +137,7 @@ export default function ImagePreviews({ fileInputRef, handleClick }) {
                   >
                     <img src={image} alt={`Uploaded ${index}`} className='preview-img' style={{maxWidth: `calc(${state.margin} * 100%)`, maxHeight: `calc(${state.margin} * 100%)`}}/>
                     <i onClick={() => handleDelete(index)} className="fa-regular fa-solid fa-circle-xmark delete"></i>
+                    <i onClick={() => handleSingleConvert(image)} className="fa-solid fa-download delete download"></i>
                   </div>
                 )
               })}
