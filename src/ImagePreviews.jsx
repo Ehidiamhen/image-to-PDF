@@ -37,10 +37,10 @@ export default function ImagePreviews({ fileInputRef, handleClick }) {
           let imgHeight = 1
           
           if (imgAspectRatio > pageAspectRatio) {
-            imgWidth = pageWidth * 1
+            imgWidth = pageWidth * state.margin
             imgHeight = imgWidth / imgAspectRatio
           } else {
-            imgHeight = pageHeight * 1
+            imgHeight = pageHeight * state.margin
             imgWidth = imgHeight * imgAspectRatio
           }
     
@@ -91,7 +91,7 @@ export default function ImagePreviews({ fileInputRef, handleClick }) {
                       height: state.landscape ? '210px' : '297px',
                     }}
                   >
-                    <img src={image} alt={`Uploaded ${index}`} className='preview-img' />
+                    <img src={image} alt={`Uploaded ${index}`} className='preview-img' style={{maxWidth: `calc(${state.margin} * 100%)`, maxHeight: `calc(${state.margin} * 100%)`}}/>
                     <i onClick={() => handleDelete(index)} className="fa-regular fa-solid fa-circle-xmark delete"></i>
                   </div>
                 )

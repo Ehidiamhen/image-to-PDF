@@ -7,8 +7,19 @@ export default function Sidebar() {
   return (
     <div className="sidebar">
       <p>PDF OPTIONS</p>
-      <button onClick={() => dispatch({type:'portrait'})}>Portrait</button>
-      <button onClick={() => dispatch({type:'landscape'})}>Landscape</button>
+
+      <div className="orientation">
+        <p className="sub-heading">Page orientation</p>
+        <button onClick={() => dispatch({type:'portrait'})}>Portrait</button>
+        <button onClick={() => dispatch({type:'landscape'})}>Landscape</button>
+      </div>
+
+      <div className="margin">
+        <p className="sub-heading">Margins</p>
+        <button onClick={() => dispatch({type:'margin', payload: 1})}>No margin</button>
+        <button onClick={() => dispatch({type:'margin', payload: 0.95})}>Small</button>
+        <button onClick={() => dispatch({type:'margin', payload: 0.9})}>Large</button>
+      </div>
     </div>
   )
 }

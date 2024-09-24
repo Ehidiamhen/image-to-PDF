@@ -149,11 +149,23 @@ h2 {
   border-left: 3px solid #ebebf4;
   background-color: #000;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
-.sidebar p {
+.sidebar > p {
   font-size: 2rem;
   margin-bottom: 2rem;
+  text-align: center;
+}
+
+.sub-heading {
+  font-size: 1.5rem;
+}
+
+.sidebar button {
+  margin: 1rem 1rem 1rem 0;
 }
 
 .sidebar button:focus, button:focus-visible {

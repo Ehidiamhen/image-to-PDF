@@ -7,6 +7,7 @@ const initialState = {
     converting: false,
     landscape: false,
     sidebar: false,
+    margin: 1,
 }
 
 const appReducer = (state, action) => {
@@ -55,12 +56,19 @@ const appReducer = (state, action) => {
             imagePreviews:[],
             landscape: false,
             sidebar: false,
+            margin: 1,
           }; 
 
         case 'sidebar':
           return {
             ...state,
             sidebar: !state.sidebar,
+          };
+        
+        case 'margin':
+          return {
+            ...state,
+            margin: action.payload, 
           };
 
         default:
