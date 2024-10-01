@@ -73,9 +73,7 @@ function App() {
               fileInputRef={fileInputRef}
               handleClick={handleClick}
             />
-            {state.sidebar ? 
-            <i onClick={() =>dispatch({type: 'sidebar'})} className="fa-regular fa-solid fa-circle-xmark close-sidebar"></i>
-            :<i onClick={() => dispatch({type: 'sidebar'})} className="fa-solid fa-gear open-sidebar"></i>}
+            {!state.sidebar && <i onClick={() => dispatch({type: 'sidebar'})} className="fa-solid fa-gear open-sidebar"></i>}
             {state.sidebar && <Sidebar />}
           </>
         )

@@ -6,6 +6,7 @@ export default function Sidebar() {
 
   return (
     <div className="sidebar">
+    {state.sidebar && <i onClick={() =>dispatch({type: 'sidebar'})} className="fa-regular fa-solid fa-circle-xmark close-sidebar"></i>}
       <p>PDF OPTIONS</p>
 
       <div className="orientation">
