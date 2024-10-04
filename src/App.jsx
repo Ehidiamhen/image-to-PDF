@@ -52,49 +52,52 @@ function App() {
   console.log(state.images)
   
   return (
-    <div
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      className='container'
-    >
-      <h2>PIC TO PDF</h2>
-      <p>Convert images to PDF in seconds. Easily adjust orientation and margins.</p>
-
-      {(state.images.length == 0 )
-        ?(
-          <>
-            <button onClick={handleClick} className='btn btn-upload'>Select your images</button>
-            <p className='drop'>or drop images here</p>
-          </>
-        )
-        :(
-          <>
-            <ImagePreviews 
-              fileInputRef={fileInputRef}
-              handleClick={handleClick}
-            />
-            {!state.sidebar && <i onClick={() => dispatch({type: 'sidebar'})} className="fa-solid fa-gear open-sidebar"></i>}
-            {state.sidebar && <Sidebar />}
-          </>
-        )
-      }
-      <input 
-      type="file" 
-      ref={fileInputRef}
-      style={{display: 'none'}}
-      accept='image/*'
-      multiple
-      onChange={handleFileChange}
-      />
-      {
-        state.converting && 
-        (
-          <div className="loadingState">
-            <i className="fa-solid fa-gear"></i>
-          </div>
-        )
-      }
-    </div>
+    <>
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        className='container'
+      >
+        <h2>PIC TO PDF</h2>
+        <p>Convert images to PDF in seconds. Easily adjust orientation and margins.</p>
+  
+        {(state.images.length == 0 )
+          ?(
+            <>
+              <button onClick={handleClick} className='btn btn-upload'>Select your images</button>
+              <p className='drop'>or drop images here</p>
+            </>
+          )
+          :(
+            <>
+              <ImagePreviews 
+                fileInputRef={fileInputRef}
+                handleClick={handleClick}
+              />
+              {!state.sidebar && <i onClick={() => dispatch({type: 'sidebar'})} className="fa-solid fa-gear open-sidebar"></i>}
+              {state.sidebar && <Sidebar />}
+            </>
+          )
+        }
+        <input 
+        type="file" 
+        ref={fileInputRef}
+        style={{display: 'none'}}
+        accept='image/*'
+        multiple
+        onChange={handleFileChange}
+        />
+        {
+          state.converting && 
+          (
+            <div className="loadingState">
+              <i className="fa-solid fa-gear"></i>
+            </div>
+          )
+        }
+      </div>
+      <footer>&#169; <a href="https://ehiz.netlify.app/" target="_blank">Ehidiamhen</a> {new Date().getFullYear()}.</footer>
+    </>
   )
 }
 
